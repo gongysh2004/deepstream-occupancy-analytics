@@ -24,7 +24,7 @@ APP:= deepstream-test5-analytics
 
 TARGET_DEVICE = $(shell gcc -dumpmachine | cut -f1 -d -)
 
-NVDS_VERSION:=5.0
+NVDS_VERSION:=5.1
 
 LIB_INSTALL_DIR?=/opt/nvidia/deepstream/deepstream-$(NVDS_VERSION)/lib/
 APP_INSTALL_DIR?=/opt/nvidia/deepstream/deepstream-$(NVDS_VERSION)/bin/
@@ -46,11 +46,12 @@ PKGS:= gstreamer-1.0 gstreamer-video-1.0 x11 json-glib-1.0
 OBJS:= $(SRCS:.c=.o)
 OBJS+= deepstream_nvdsanalytics_meta.o
 
-CFLAGS+= -I../../apps-common/includes -I./includes -I../../../includes -I../deepstream-app/ -DDS_VERSION_MINOR=0 -DDS_VERSION_MAJOR=5
+CFLAGS+= -I../../apps-common/includes -I./includes -I../../../includes -I../deepstream-app/ -DDS_VERSION_MINOR=1 -DDS_VERSION_MAJOR=5 -I /usr/local/cuda-10.2/include
 CFLAGS+= -I$(INC_DIR)
 
 
-LIBS+= -L$(LIB_INSTALL_DIR) -lnvdsgst_meta -lnvds_meta -lnvdsgst_helper -lnvdsgst_smartrecord -lnvds_utils -lnvds_msgbroker -lm \
+LIBS:= -L/usr/local/cuda-10.2/lib64/ -lcudart
+LIBS+= -L$(LIB_INSTALL_DIR) -lnvdsgst_meta -lnvds_meta -lnvdsgst_helper -lnvdsgst_smartrecord -lnvds_utils -lnvds_msgbroker -lm -lcuda \
        -lgstrtspserver-1.0 -ldl -Wl,-rpath,$(LIB_INSTALL_DIR)
 
 CFLAGS+= `pkg-config --cflags $(PKGS)`
